@@ -1,0 +1,282 @@
+---
+title: "FA22_virus_injections"
+author: "Lorrie He"
+date: "2022-09-13"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+
+## load in packages
+library(tidyverse)
+library(dplyr)
+library(plyr)
+library(ggplot2)
+#library(RColorBrewer)
+#library(viridisLite)
+#library(gridExtra)
+
+# packages to read from google sheets
+  # i haven't quite gotten this working yet...
+# install.packages("googlesheets4")
+#library(googlesheets4)
+
+# last edited: 22 sept 25
+
+```
+
+## read me & changelog
+
+this is the cleaned up code (from manduca.R) for analysing the growth/etc data for the virus injections :)
+see lab data dev/endpoint growth processing notes -- basically i need to re-do the analysis for this to have it match up to the field stuff
+
+### changelog
+reverse chronological
+
+1/25/22:
+* redoing round 4 plots --> make into bars for 1st committee mtg
+  * copying from manduca.R
+
+9/25/22: 
+* for now, work on the field analysis stuff before reworking the lab analysis.
+* working on field dev
+
+
+
+## dushay + beckage data
+notes
+  * values were obtained from plot in the paper via some webapp lol
+  
+  
+```{r function defining}
+
+testdata <- field_dev # create a test dataframe
+
+# date-mo to julian
+#to_julian <- function(column){
+# column <-  as.Date(column, format = "%d-%b")
+# df$j_date_c <- as.numeric(as.Date(df$date_c, format = "%j"))
+#}
+to_julian <- function(data, col){
+  #data$col <- as.Date(data$col) #reformats dates
+  data$j-{{col}} <- as.numeric(format(data$col, "%j"))
+}
+
+#to_julian(testdata,date.coll)
+
+
+```
+
+
+  
+```{r d&b data}
+
+dnb <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/db1993_data.csv")
+names(dnb) <- sub("^X", "", names(dnb)) # removes leading X's in column names
+
+```
+
+## lab data: development/endpoints
+
+9/13/22 processing notes: 
+  * i should actually process this more like the field data... go redo this lol
+  * currently set up to be analysed as date since 3rd instar -- should be reworked to read by date since injection to better align with the field data
+
+```{r initial pre-processing, warning=FALSE}
+
+## read in data & some pre-processing
+all_lab <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/mar2022.csv")
+  # 9/13/22: this is the longform data. go read in the short form and convert to long
+
+all_lab <- all_lab %>% filter(days.since.3rd <= 15) #the numbers look bad after 13 days tbh bc of all the drops in weight
+lab_wands <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/wands.csv")
+
+# make columns numeric (they dont read in this way for some reason)
+all_lab$weight.g <- as.numeric(all_lab$weight.g)
+
+lab_wands$days.died <- as.numeric(lab_wands$days.died)
+lab_wands$days.em <- as.numeric(lab_wands$days.em)
+lab_wands$days.pup <- as.numeric(lab_wands$days.pup)
+lab_wands$days.wand <- as.numeric(lab_wands$days.wand)
+
+
+```
+
+```{r filtering/subset generation}
+
+# to remove the bad injections, slow growers, wandering nat. paras, pre-mature deaths (in injected/NP groups)
+
+lab_clean <- all_lab %>% filter(unique != "R1-para.d0-03", unique != "R1-para.d0-05", 
+                            unique != "R1-para.d1-04",
+                            unique != "R1-25-01", unique != "R1-25-02", unique != "R1-25-04", unique != "R1-25-09", unique != "R1-25-10",
+                            unique != "R1-10-01", unique != "R1-10-02", unique != "R1-10-04", unique != "R1-10-07", unique != "R1-10-08", unique != "R1-10-09"  #keeping 10-10 in
+                            ) %>%
+                     filter((round == "R1" & treatment != "1") | round == "R2")
+
+
+# 9/13/22 idk if i'll include those data subsets rn bc idk what i used them for LOL
+#data.para <- data.rm2 %>% filter(unique != "R1-para.d0-03", unique != "R1-para.d0-05", 
+#                             unique != "R1-para.d1-04", 
+#                             treatment == "para")
+
+#data.nopara <- data.rm2 %>% filter(treatment != "para")
+
+#data.R1 <- data.rm2 %>% filter(round == "R1")
+
+#data.R2 <- data.rm2 %>% filter(round == "R2")
+
+#wands.nopara <- wands.rm %>% filter(treatment != "para")
+#wands.para <- wands.rm %>% filter(treatment == "para")
+
+```
+
+
+```{r summary statistics}
+
+summary.rm2 <- data.rm2 %>% group_by(treatment, days.since.3rd) %>% 
+  summarise(avg = mean(weight.g, na.rm=TRUE),
+            se = sd(weight.g, na.rm=TRUE)/length(weight.g),
+            n = n())
+
+summary.wands <- wands.nopara %>% group_by(treatment) %>%
+  summarise(avg.wand.wt = mean(weight.wand, na.rm=TRUE),
+            se.wand.wt = sd(weight.wand, na.rm=TRUE)/length(weight.wand),
+            time.to.wand = days.wand-date.inj,
+            avg.wand.time = mean(time.to.wand, na.rm=TRUE),
+            se.wand.time = sd(time.to.wand, na.rm=TRUE)/length(time.to.wand),
+            time.to.pup = days.pup-days.wand,
+            avg.pup.time = mean(time.to.pup, na.rm=TRUE),
+            se.pup.time = sd(time.to.pup, na.rm=TRUE)/length(time.to.pup),
+            n = n())
+
+```
+
+
+```{r plots, echo=FALSE}
+
+# sort this out again once you've cleaned up the lab processing
+
+```
+
+
+```{r lab data: development data part 2????}
+
+# whatever the hell this is
+
+#all_orig <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/all_devdata.csv")
+  # how is this different from ~/.../virus/mar2022.csv?
+
+```
+
+## lab data: daily growth
+
+```{r read in lab}
+
+growth_trimmed <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/daily.csv", header=T)
+names(growth_trimmed) <- sub("^X", "", names(growth_trimmed)) # remove leading X's
+
+```
+
+## field data: endpoints only
+
+```{r read in field, message=FALSE}
+
+field_dev <- read_csv("~/Desktop/working_csvs/field_dev.csv")
+
+testdata <- testdata %>% 
+  mutate(across(starts_with("mass.",), ~as.numeric(as.character(.))), # this one works
+         across(starts_with("date.",), ~as.Date((.), format = "%d-%b")) # this doesnt tho lmfao
+  )
+
+## convert to julian dates
+
+# something from indigo to try
+# df %>%
+#   mutate(
+#     across(
+#       .cols = date.inject:date.wander,
+#       .fns = ~ as.numeric(as.Date(.x, format = '%d-%b'), format = '%j'),
+#       .names = str_c('j', {.col}))
+ 
+#field_dev$date.hatch <- as.Date(field_dev$date.hatch, format = "%d-%b")
+#field_dev$j_date.hatch <- as.numeric(format(field_dev$hatch, "%j"))
+#field_dev$date.4th <- as.Date(field_dev$date.4th, format = "%d-%b")
+#field_dev$j_date.4th <- as.numeric(format(field_dev$date.4th, "%j"))
+#field_dev$date.5th <- as.Date(field_dev$date.5th, format = "%d-%b")
+#field_dev$j_date.5th <- as.numeric(format(field_dev$date.5th, "%j"))
+#field_dev$date.6th <- as.Date(field_dev$date.6th, format = "%d-%b")
+#field_dev$j_date.6th <- as.numeric(format(field_dev$date.6th, "%j"))
+#field_dev$date.7th <- as.Date(field_dev$date.7th, format = "%d-%b")
+#field_dev$j_date.7th <- as.numeric(format(field_dev$date.7th, "%j"))
+field_dev$date.inject <- as.Date(field_dev$date.inject, format = "%d-%b")
+field_dev$j_date.inject <- as.numeric(format(field_dev$inject, "%j"))
+field_dev$date.pmd <- as.Date(field_dev$date.pmd, format = "%d-%b")
+field_dev$j_date.pmd <- as.numeric(format(field_dev$date.pmd, "%j"))
+field_dev$date.wander <- as.Date(field_dev$date.wander, format = "%d-%b")
+field_dev$j_date.wander <- as.numeric(format(field_dev$date.wander, "%j"))
+field_dev$date.pupa <- as.Date(field_dev$date.pupa, format = "%d-%b")
+field_dev$j_date.pupa <- as.numeric(format(field_dev$date.pupa, "%j"))
+field_dev$date.eclose <- as.Date(field_dev$date.eclose, format = "%d-%b")
+field_dev$j_date.eclose <- as.numeric(format(field_dev$date.eclose, "%j"))
+
+## doing stats
+# stats_field.dev <- field_dev %>%      # this got wonky.. redoing this below
+#     filter(species == "MS",
+#          dose != "") %>%
+#   group_by(temp, dose, is.sup) %>%
+#   mutate(
+#     time.towander = j_date.wander - j_date.inject,
+#     time.topupate = j_date.pupa - j_date.inject,
+#     time.toeclose = j_date.eclose - j_date.inject,
+#     time.topmd = j_date.pmd - j_date.inject,
+#     time.todeath = j_date.died - j_date.inject,
+#   )
+
+# avg masses and times to endpoints
+endpoints_ms_field.dev <- field_dev %>%
+  filter(species == "MS",               # filtering out "bad" individuals
+         dose != "",
+         source != "lab",
+         is.na(ignore.reason)) %>%
+  # mutate(                               # mutate adds onto new columns, summarise drops
+  #   time.towander = j_date.wander - j_date.inject,
+  #   time.topmd = j_date.pmd - j_date.inject) %>%
+  group_by(temp, dose, is.sup) %>%
+  dplyr::summarise(
+    n = n(),
+    avg_mass.wand = mean(mass.wander, na.rm=TRUE),
+    avg_mass.pupa = mean(mass.pupa, na.rm=TRUE),
+    avg_time.wand = mean(j_date.wander-j_date.inject),
+    avg_time.pupa = mean(j_date.pupa-j_date.wander),
+    avg_time.ec = mean(j_date.eclose-j_date.inject)
+  )
+  
+# overview of individuals in expt (probably done!)
+  # this would look nice as a stacked bar graph if i knew how to do that
+  # consider when to separate MS and MQ...
+overview_all_field.dev <- field_dev %>%
+  filter(
+    dose != "",
+    species != "",
+    source != "lab") %>%
+  group_by(dose, temp, species) %>%
+  dplyr::summarise(
+    n = n(),
+    n_pink = length(which(color == "pink")),
+    n_pmd = length(which(outcome == "pmd")),
+    n_wand = length(which(outcome == "wand")),
+    n_wowe = length(which(outcome == "wowe")),
+    n_em = length(which(outcome == "em")), 
+    n_sup = length(which(is.sup == "yes")),
+    pct_pmd = format(round(n_pmd/n*100, 1), nsmall=1),
+    pct_wand = format(round(n_wand/n*100, 1), nsmall=1),
+    pct_sup = format(round(n_sup/n*100, 1), nsmall=1),
+    pct_wowe = format(round(n_wowe/n*100,1), nsmall=1),
+    pct_em = format(round(n_wowe/n*100,1), nsmall=1)
+  )
+
+
+
+
+```
+
