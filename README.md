@@ -19,7 +19,7 @@ VIRUS INJECTION EXPTS
 * round 4: adding in heat shock, using 0.5 and 1 we only, added fb extractions
 
 
-# associated files in repo (reverse chronological)
+# associated files in git repo (reverse chronological)
 
 * compilation.xlsx: this is mar2022_comp.xlsx
 * db1993_data.csv: d&b data ripped from that figure
@@ -29,7 +29,7 @@ VIRUS INJECTION EXPTS
 # associated files in original local folder (reverse chronological & sorta alphabetical)
 
 * mar2022_comp.xlsx: **USE!** full compilation of data!
-  * this has metadata too
+  * this has metadata for everyone too
 
 * all_devdata: development data only of above (to import into R)
 * all_devdata_rm: removed bad ones bc i was losing my mind trying to do it in R

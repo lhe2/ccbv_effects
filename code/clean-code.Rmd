@@ -28,7 +28,7 @@ library(ggplot2)
 ## read me & changelog
 
 this is the cleaned up code (from manduca.R) for analysing the growth/etc data for the virus injections :)
-see lab data dev/endpoint growth processing notes -- basically i need to re-do the analysis for this to have it match up to the field stuff
+see lab data dev/endpoint growth processing notes -- basically i need to re-do the analysis for this to have it match up to the field stuff (bc one tracks days after inject, other tracks days after hatch)
 
 ### changelog
 reverse chronological
