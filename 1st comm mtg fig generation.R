@@ -121,7 +121,7 @@ field_MS <- long %>% # separates sups
 
 
 ### plot
-fieldplot <- field_MS %>% filter(is.sup == "no") %>% # remove sup for committee mtg so x-axis isnt cropped
+fieldplot <- field_MS %>% #filter(is.sup == "no") %>% # remove sup for committee mtg so x-axis isnt cropped
   ggplot(aes(y=avg.mass, x=days.since.inject, 
              #color=as.factor(para.type), 
              color=as.factor(temp)
