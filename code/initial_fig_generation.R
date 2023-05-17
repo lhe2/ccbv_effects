@@ -10,15 +10,20 @@ install.packages("googlesheets4")
 library(googlesheets4)
 
 
+### need to update read.csv() lines with data in /ccbv_effectsdata/old/ before running ###
+# i did some and then i gave up
+
+
 # read in data ------------------------------------------------------------
 ### read in data and data prep
 #all <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/mar2022.csv")
 #all$weight.g <- as.numeric(all$weight.g)
 
-data <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/mar2022.csv")
+#data <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/mar2022.csv")
+data <- read.csv("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/mar2022.csv")
 data <- data %>% filter(days.since.3rd <= 15) #the numbers look bad after 13 days tbh bc of all the drops in weight
-wands.data <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/wands.csv")
-
+#wands.data <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/wands.csv")
+wands.data <-("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/wands.csv")
 
 # make numeric
 data$weight.g <- as.numeric(data$weight.g) # for some reason this column isnt numberic
@@ -267,15 +272,15 @@ ggplot(data = summary.ems, aes(x = treatment.2, y = avg.em.time)) +
 ### apr data
 
 #apr <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/apr-test.csv") #need to clean
-apr <- read.csv("~/Desktop/apr2.csv")
-
+#apr <- read.csv("~/Desktop/apr2.csv")
+apr <- read.csv("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/apr2.csv")
 apr <- apr %>% filter(unique != "40-0.5-3") %>% select(-unique)
 apr$X17.Apr <- as.numeric(apr$'X17.Apr') # force NAs
 apr$X1.May <- as.numeric(apr$'X1.May') # force NAs
 
 long.apr <- apr %>% pivot_longer(cols = 6:20, names_to = c('date'), names_prefix = "X", values_to = 'weight.g') 
 # "unique" breaks the pivot :\
-write_csv(long.apr, file = '~/Desktop/longapr.csv')
+#write_csv(long.apr, file = '~/Desktop/longapr.csv')
 
 #long.apr <- long.apr %>% mutate(days.since.3rd = case_when(date = '17.Apr' ~ '3'))
 
@@ -306,7 +311,8 @@ facet_wrap(~temp) +
 
 # (old) combined wands -----------------------------------------------------------------
 
-all_wands <- read.csv("~/Desktop/all_wands.csv")
+#all_wands <- read.csv("~/Desktop/all_wands.csv")
+all_wands <-read.csv("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/wands.csv")
 
 summary.all_wands <- all_wands %>% group_by(temp, treatment) %>%
   summarise(avg.wand.weight = mean(wand.weight, na.rm=TRUE),
@@ -323,8 +329,10 @@ ggplot(data = summary.all_wands, aes(x=treatment, y = avg.wand.weight, color = a
   geom_errorbar(aes(ymin = avg.wand.weight-wand.se, ymax = avg.wand.weight+wand.se))
 
 # (use!) development data -------------------------------------------------------------
-all_orig <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/all_devdata.csv")
-all <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/all_devdata_rm.csv")
+#all_orig <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/all_devdata.csv")
+all_orig <- read.csv("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/all_devdata.csv")
+#all <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/all_devdata_rm.csv")
+all <- read.csv("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/all_devdata_rm.csv")
 # took out the bad ones. too lazy to repeat all the typing
 
 # fix column types
@@ -490,8 +498,8 @@ view(all %>% group_by(heatshock, para.type) %>% count()) ### use this
 # so virus was prob dead!!!! lawl
 
 # READ DATA
-all_orig <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/all_devdata.csv")
-all <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/all_devdata_rm.csv")
+#all_orig <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/all_devdata.csv")
+#all <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/all_devdata_rm.csv")
 # took out the bad ones. too lazy to repeat all the typing (based on "filtering and cleaning" section above)
 
 # FIX COLUMN TYPES
@@ -739,13 +747,15 @@ plot.pbsdur
 # daily growth (lab) ------------------------------------------------------------
 
 # read in data
-growth_trimmed <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/daily.csv", header=T)
+#growth_trimmed <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/daily.csv", header=T)
+growth_trimmed <- read.csv("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/old/daily.csv")
 names(growth_trimmed) <- sub("^X", "", names(growth_trimmed)) # remove leading X's
 
 
 # d&b 1993 data (guessing)
 
-dnb <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/db1993_data.csv")
+#dnb <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Y1/virus/db1993_data.csv")
+dnb <- read.csv("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/db1993_data.csv")
 names(dnb) <- sub("^X", "", names(dnb))
 
 

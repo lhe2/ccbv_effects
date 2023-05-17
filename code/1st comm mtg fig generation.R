@@ -7,8 +7,8 @@ library(ggplot2)
 # lab ---------------------------------------------------------------------
 
 ### read in data
-lab <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Documents/projects/ccbv_effects/data/lab_daily-growth.csv", header=T)
-
+#lab <- read.csv("~/OneDrive - University of North Carolina at Chapel Hill/Documents/projects/ccbv_effects/data/lab_daily-growth.csv", header=T)
+labs <- read.csv("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/lab_daily-growth.csv", header=T)
 names(lab) <- sub("^X", "", names(lab)) # remove leading X's
 
 
@@ -76,8 +76,8 @@ lab_avgstats2 + geom_line() + geom_errorbar(aes(ymin=avg-se, ymax=avg+se)) +
 # field -------------------------------------------------------------------
 
 ### read in data
-field <- read.csv("data/fielding2.csv")
-
+#field <- read.csv("data/fielding2.csv")
+field <- read.csv("~/Documents/projects/_not-public/1_data/ccbv_effectsdata/fielding2.csv")
 
 ### fixing & wrangle prep
 # fix column names

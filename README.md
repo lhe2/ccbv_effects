@@ -28,6 +28,8 @@ VIRUS INJECTION EXPTS
 
 # associated files in original local folder (reverse chronological & sorta alphabetical)
 
+(a lot of these are in the old/ data folder to make the script work)
+
 * mar2022_comp.xlsx: **USE!** full compilation of data!
   * this has metadata for everyone too
 
